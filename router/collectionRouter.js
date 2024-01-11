@@ -1,7 +1,7 @@
 const Router = require('express');
 const CollectionController = require('../controllers/collectionController');
 const router = new Router();
-const { checkJwt } = require('../auth0/jwtCheker');
+const { checkJwt } = require('../auth0/jwtChecker');
 
 router.get('/', CollectionController.getAllCollections);
 router.get('/my', checkJwt, CollectionController.getMyCollections);

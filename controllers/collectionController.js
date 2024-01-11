@@ -1,4 +1,5 @@
 const collectionServise = require('../servises/collectionServise');
+const itemService = require('../servises/itemService');
 
 class CollectionController {
     async getTopCollections(req, res, next) {
@@ -21,7 +22,7 @@ class CollectionController {
 
     async getMyCollections(req, res, next) {
         try {
-            const myCollections = await getMyCollections(req.auth.sub);
+            const myCollections = await collectionServise.getMyCollections(req.auth.sub);
             res.json(myCollections);
         } catch (e) {
             next(e);
@@ -56,6 +57,7 @@ class CollectionController {
             const collectionId = req.params.id;
             const deleteCollectionUser =
                 await collectionServise.deleteCollection(collectionId);
+            await itemService.deleteItemsByCollectionId(collectionId);
             res.json(deleteCollectionUser);
         } catch (e) {
             next(e);
@@ -66,10 +68,16 @@ class CollectionController {
         try {
             const collectionId = req.params.id;
             const newCollection = req.body;
+            const { title, customFields: collectionCustomFields } = newCollection;
 
             const updateCollectionUser = await collectionServise.updateCollection(
                 newCollection,
                 collectionId
+            );
+            await itemService.updateItemOnCollectionUpdate(
+                collectionId,
+                title,
+                collectionCustomFields
             );
 
             res.json(updateCollectionUser);
