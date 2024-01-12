@@ -7,7 +7,7 @@ const itemsSchema = new mongoose.Schema(
         collectionTitle: String,
         title: String,
         description: String,
-        tags: Array,
+        tags: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tag' }],
         likes: Array,
         urlImage: String,
         createdBy: String,

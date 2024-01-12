@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { checkJwt } = require('../auth0/jwtChecker');
-const itemController = require('../servises/itemService');
+const itemController = require('../controllers/itemController');
 
 router.post('/new', checkJwt, itemController.createItem);
 router.get('/recent', itemController.getRecentItems);
