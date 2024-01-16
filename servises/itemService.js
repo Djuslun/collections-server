@@ -72,7 +72,7 @@ class ItemService {
         await Item.updateMany({ collectionId }, { $set: { collectionTitle: title } });
 
         itemsInCollection.forEach(async (item) => {
-            customField = synchronizeArrays(collectionCustomFields, item.customFields);
+            const customField = synchronizeArrays(collectionCustomFields, item.customFields);
             await Item.findByIdAndUpdate(
                 { _id: item._id },
                 { $set: { customFields: customField } }

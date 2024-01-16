@@ -9,7 +9,7 @@ const itemsSchema = new mongoose.Schema(
         description: String,
         tags: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tag' }],
         likes: Array,
-        urlImage: String,
+        imageUrl: String,
         createdBy: String,
         userId: String,
         customFields: Array,
