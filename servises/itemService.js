@@ -1,6 +1,7 @@
 const Item = require('../models/Item');
 const Collection = require('../models/Collection');
 const { synchronizeArrays } = require('../utils/updateCollectionFields');
+const commentServise = require('./commentService');
 
 class ItemService {
     async createItem(item) {
@@ -23,7 +24,7 @@ class ItemService {
     }
 
     async getRecentItems() {
-        const items = await Item.find().sort({ createdAt: -1 }).limit(3);
+        const items = await Item.find().sort({ createdAt: -1 }).limit(5);
         return items;
     }
 
@@ -41,6 +42,8 @@ class ItemService {
                 { $inc: { itemCount: -1 } }
             );
         }
+
+        await commentServise.deleteCommentByItemId(response._id);
 
         return response;
     }
@@ -63,8 +66,8 @@ class ItemService {
     }
 
     async deleteItemsByCollectionId(collectionId) {
-        const itemsInCollection = await Item.find({ collectionId: collectionId });
-        itemsInCollection.forEach(async (item) => await this.deleteItem(item._id));
+        const itemsInCollection = await Item.deleteMany({ collectionId: collectionId });
+        return itemsInCollection;
     }
 
     async updateItemOnCollectionUpdate(collectionId, title, collectionCustomFields) {
@@ -72,7 +75,10 @@ class ItemService {
         await Item.updateMany({ collectionId }, { $set: { collectionTitle: title } });
 
         itemsInCollection.forEach(async (item) => {
-            const customField = synchronizeArrays(collectionCustomFields, item.customFields);
+            const customField = synchronizeArrays(
+                collectionCustomFields,
+                item.customFields
+            );
             await Item.findByIdAndUpdate(
                 { _id: item._id },
                 { $set: { customFields: customField } }

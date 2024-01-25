@@ -16,6 +16,11 @@ class CommentService {
         const deletedComment = await Comment.findByIdAndDelete(id);
         return deletedComment;
     }
+
+    async deleteCommentByItemId(itemId) {
+        const deletedComment = await Comment.deleteMany({ itemId });
+        return deletedComment;
+    }
 }
 
 module.exports = new CommentService();
