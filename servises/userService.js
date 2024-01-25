@@ -26,23 +26,37 @@ class UserService {
         return new UserDto({ ...user, role: userRoles });
     }
 
-    async assignRolesAdmin(userId) {
-        return await auth0.users.assignRoles(
-            { id: userId },
-            { roles: [`${process.env.AUTH_ADMIN_ROLE_ID}`] }
+    async assignRolesAdmin(userIds) {
+        return await Promise.all(
+            userIds.map((userId) =>
+                auth0.users.assignRoles(
+                    { id: userId },
+                    { roles: [`${process.env.AUTH_ADMIN_ROLE_ID}`] }
+                )
+            )
         );
     }
 
-    async deleteRolesAdmin(userId) {
-        return await auth0.users.deleteRoles(
-            { id: userId },
-            { roles: [`${process.env.AUTH_ADMIN_ROLE_ID}`] }
+    async deleteRolesAdmin(userIds) {
+        return await Promise.all(
+            userIds.map((userId) =>
+                auth0.users.deleteRoles(
+                    { id: userId },
+                    { roles: [`${process.env.AUTH_ADMIN_ROLE_ID}`] }
+                )
+            )
         );
     }
 
     async getUserRoles(userId) {
         const roles = await auth0.users.getRoles({ id: userId });
         return roles.data.map((role) => role.name);
+    }
+
+    async deleteUsers(userIds) {
+        return await Promise.all(
+            userIds.map((userId) => auth0.users.delete({ id: userId }))
+        );
     }
 }
 
