@@ -24,6 +24,15 @@ class ItemController {
         }
     }
 
+    async getItemsByTag(req, res, next) {
+        try {
+            const itemsByTag = await itemServise.getItemsByTag(req.params.id);
+            res.json(itemsByTag);
+        } catch (e) {
+            next(e);
+        }
+    }
+
     async getRecentItems(req, res, next) {
         try {
             const recentItems = await itemServise.getRecentItems();

@@ -16,10 +16,15 @@ class ItemService {
     }
 
     async getItemsInCollection(collectionId, sort = -1) {
-        const myCollection = await Item.find({ collectionId: collectionId }).sort({
+        const itemsInCollection = await Item.find({ collectionId: collectionId }).sort({
             createdAt: sort,
         });
 
+        return itemsInCollection;
+    }
+
+    async getItemsByTag(tagId) {
+        const myCollection = await Item.find({ tags: tagId });
         return myCollection;
     }
 
@@ -44,7 +49,6 @@ class ItemService {
         }
 
         await commentServise.deleteCommentByItemId(response._id);
-
         return response;
     }
 
